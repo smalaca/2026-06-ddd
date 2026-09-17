@@ -3,7 +3,15 @@ package com.smalaca.trainingcenter.trainingscatalogue.domain.idea;
 // Aggregate Root
 // Entity
 public class Idea {
+    private final IdeaNumber ideaNumber;
+
+    private Idea(IdeaNumber ideaNumber) {
+        this.ideaNumber = ideaNumber;
+    }
+
+    // Factory
     public static Idea create() {
-        return null;
+        IdeaNumber ideaNumber = IdeaNumber.create();
+        return new Idea(ideaNumber);
     }
 }
