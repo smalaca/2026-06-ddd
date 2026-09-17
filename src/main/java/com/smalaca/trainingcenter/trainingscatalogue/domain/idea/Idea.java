@@ -1,8 +1,13 @@
 package com.smalaca.trainingcenter.trainingscatalogue.domain.idea;
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
 // Aggregate Root
 // Entity
 public class Idea {
+    @Id
+    @GeneratedValue
     private IdeaId ideaId;
     private final IdeaNumber ideaNumber;
 
