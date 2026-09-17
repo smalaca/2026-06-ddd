@@ -1,16 +1,19 @@
 package com.smalaca.trainingcenter.trainingscatalogue.application.idea;
 
-import com.smalaca.trainingcenter.trainingscatalogue.domain.idea.AuthorId;
-import com.smalaca.trainingcenter.trainingscatalogue.domain.idea.Idea;
-import com.smalaca.trainingcenter.trainingscatalogue.domain.idea.IdeaRepository;
+import com.smalaca.trainingcenter.opentrainings.domain.summary.SummaryRepository;
+import com.smalaca.trainingcenter.trainingscatalogue.domain.draft.Draft;
+import com.smalaca.trainingcenter.trainingscatalogue.domain.draft.DraftRepository;
+import com.smalaca.trainingcenter.trainingscatalogue.domain.idea.*;
 
 import java.util.UUID;
 
 public class IdeaApplicationService {
     private final IdeaRepository ideaRepository;
+    private final DraftRepository draftRepository;
 
-    public IdeaApplicationService(IdeaRepository ideaRepository) {
+    public IdeaApplicationService(IdeaRepository ideaRepository, DraftRepository draftRepository) {
         this.ideaRepository = ideaRepository;
+        this.draftRepository = draftRepository;
     }
 
     public UUID registerIdea(RegisterIdeaCommand command) {
@@ -28,5 +31,19 @@ public class IdeaApplicationService {
 
         // 3. zapis [1...*]
         return ideaRepository.save(idea);
+    }
+
+    public UUID acceptIdea(UUID ideaId, UUID reviewerId) {
+        // tłumaczenie
+        ReviewerId reviewerIdVO = new ReviewerId(reviewerId);
+        IdeaId ideaIdVO = new IdeaId(ideaId);
+        Idea idea = ideaRepository.findById(ideaIdVO);
+
+        // domena
+        Draft draft = idea.accept(reviewerIdVO);
+
+        // zapis
+        ideaRepository.save(idea);
+        return draftRepository.save(draft);
     }
 }
