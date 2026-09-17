@@ -1,7 +1,7 @@
 package com.smalaca.trainingcenter.opentrainings.application.training;
 
-import com.smalaca.trainingcenter.opentrainings.domain.training.Training;
-import com.smalaca.trainingcenter.opentrainings.domain.training.TrainingRepository;
+import com.smalaca.trainingcenter.opentrainings.domain.training.*;
+import com.smalaca.trainingcenter.opentrainings.domain.training.commands.AddTrainingDomainCommand;
 
 import java.util.UUID;
 
@@ -12,8 +12,14 @@ public class TrainingApplicationService {
         this.trainingRepository = trainingRepository;
     }
 
-    public UUID addTraining() {
-        Training training = Training.create();
+    public UUID addTraining(AddTrainingCommand command) {
+        TrainingDefinitionId trainingDefinitionId = new TrainingDefinitionId(command.trainingDefinitionId());
+        TrainerId trainerId = new TrainerId(command.trainerId());
+        Period period = new Period(command.startDate(), command.endDate());
+        AddTrainingDomainCommand domainCommand = new AddTrainingDomainCommand(
+                trainingDefinitionId, trainerId, period);
+
+        Training training = Training.create(domainCommand);
 
         return trainingRepository.save(training);
     }
