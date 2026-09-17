@@ -2,6 +2,7 @@ package com.smalaca.trainingcenter.opentrainings.application.summary;
 
 import com.smalaca.trainingcenter.opentrainings.domain.summary.Summary;
 import com.smalaca.trainingcenter.opentrainings.domain.summary.SummaryRepository;
+import com.smalaca.trainingcenter.opentrainings.domain.training.TrainingId;
 
 import java.util.UUID;
 
@@ -12,8 +13,10 @@ public class SummaryApplicationService {
         this.summaryRepository = summaryRepository;
     }
 
-    public UUID registerAttendance() {
-        Summary summary = Summary.create();
+    public UUID registerAttendance(UUID trainingId) {
+        TrainingId trainingIdVO = new TrainingId(trainingId);
+
+        Summary summary = Summary.create(trainingIdVO);
 
         return summaryRepository.save(summary);
     }
