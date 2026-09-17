@@ -10,14 +10,20 @@ public class Idea {
     @GeneratedValue
     private IdeaId ideaId;
     private final IdeaNumber ideaNumber;
+    private final AuthorId authorId;
+    private final String title;
+    private final String description;
 
-    private Idea(IdeaNumber ideaNumber) {
+    private Idea(IdeaNumber ideaNumber, AuthorId authorId, String title, String description) {
         this.ideaNumber = ideaNumber;
+        this.authorId = authorId;
+        this.title = title;
+        this.description = description;
     }
 
     // Factory
-    public static Idea create() {
-        IdeaNumber ideaNumber = IdeaNumber.create();
-        return new Idea(ideaNumber);
+    public static Idea create(AuthorId authorId, String title, String description) {
+        IdeaNumber ideaNumber = IdeaNumber.create(authorId);
+        return new Idea(ideaNumber, authorId, title, description);
     }
 }

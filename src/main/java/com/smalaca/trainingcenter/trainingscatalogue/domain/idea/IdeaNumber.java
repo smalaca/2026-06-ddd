@@ -11,7 +11,7 @@ class IdeaNumber {
     }
 
     // Factory
-    public static IdeaNumber create() {
-        return new IdeaNumber("IDEA/" + UUID.randomUUID());
+    public static IdeaNumber create(AuthorId authorId) {
+        return new IdeaNumber("Idea/" + authorId.getValue() + "/" + UUID.randomUUID());
     }
 }
