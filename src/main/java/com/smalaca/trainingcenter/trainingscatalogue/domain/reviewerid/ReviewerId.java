@@ -1,4 +1,4 @@
-package com.smalaca.trainingcenter.trainingscatalogue.domain.idea;
+package com.smalaca.trainingcenter.trainingscatalogue.domain.reviewerid;
 
 import java.util.UUID;
 

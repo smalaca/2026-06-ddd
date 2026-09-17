@@ -15,7 +15,7 @@ public class AuthorId {
         return new AuthorId(value);
     }
 
-    UUID getValue() {
+    public UUID getValue() {
         return value;
     }
 }

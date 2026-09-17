@@ -1,6 +1,6 @@
 package com.smalaca.trainingcenter.trainingscatalogue.application.idea;
 
-import com.smalaca.trainingcenter.opentrainings.domain.summary.SummaryRepository;
+import com.smalaca.trainingcenter.trainingscatalogue.domain.reviewerid.ReviewerId;
 import com.smalaca.trainingcenter.trainingscatalogue.domain.draft.Draft;
 import com.smalaca.trainingcenter.trainingscatalogue.domain.draft.DraftRepository;
 import com.smalaca.trainingcenter.trainingscatalogue.domain.idea.*;

@@ -1,5 +1,6 @@
 package com.smalaca.trainingcenter.trainingscatalogue.domain.idea;
 
+import com.smalaca.trainingcenter.trainingscatalogue.domain.reviewerid.ReviewerId;
 import com.smalaca.trainingcenter.trainingscatalogue.domain.draft.Draft;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -14,6 +15,8 @@ public class Idea {
     private final AuthorId authorId;
     private final String title;
     private final String description;
+    private ReviewerId reviewerId;
+    private IdeaStatus status;
 
     private Idea(IdeaNumber ideaNumber, AuthorId authorId, String title, String description) {
         this.ideaNumber = ideaNumber;
@@ -28,7 +31,11 @@ public class Idea {
         return new Idea(ideaNumber, authorId, title, description);
     }
 
-    public Draft accept(ReviewerId reviewerIdVO) {
-        return null;
+    // Factory
+    public Draft accept(ReviewerId reviewerId) {
+        this.reviewerId = reviewerId;
+        this.status = IdeaStatus.ACCEPTED;
+
+        return Draft.create(title, description, authorId, ideaId, reviewerId);
     }
 }
