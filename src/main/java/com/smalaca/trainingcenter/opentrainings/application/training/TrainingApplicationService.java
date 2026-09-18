@@ -5,15 +5,18 @@ import com.smalaca.trainingcenter.opentrainings.domain.offer.Offer;
 import com.smalaca.trainingcenter.opentrainings.domain.offer.OfferRepository;
 import com.smalaca.trainingcenter.opentrainings.domain.training.*;
 import com.smalaca.trainingcenter.opentrainings.domain.training.commands.AddTrainingDomainCommand;
+import com.smalaca.trainingcenter.opentrainings.domain.trainingscatalogue.TrainingsCatalogue;
 
 import java.util.UUID;
 
 public class TrainingApplicationService {
+    private final TrainingsCatalogue trainingsCatalogue;
     private final TrainingRepository trainingRepository;
     private final OfferRepository offerRepository;
     private final Clock clock;
 
-    public TrainingApplicationService(TrainingRepository trainingRepository, OfferRepository offerRepository, Clock clock) {
+    public TrainingApplicationService(TrainingsCatalogue trainingsCatalogue, TrainingRepository trainingRepository, OfferRepository offerRepository, Clock clock) {
+        this.trainingsCatalogue = trainingsCatalogue;
         this.trainingRepository = trainingRepository;
         this.offerRepository = offerRepository;
         this.clock = clock;
@@ -27,7 +30,7 @@ public class TrainingApplicationService {
         AddTrainingDomainCommand domainCommand = new AddTrainingDomainCommand(
                 trainingDefinitionId, trainerId, period, price);
 
-        Training training = Training.create(domainCommand);
+        Training training = Training.create(domainCommand, trainingsCatalogue);
 
         return trainingRepository.save(training);
     }

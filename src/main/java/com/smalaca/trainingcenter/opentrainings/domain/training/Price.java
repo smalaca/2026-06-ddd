@@ -19,4 +19,20 @@ public class Price {
 
         return new Price(price);
     }
+
+    public Price minus(BigDecimal value) {
+        return new Price(price.subtract(value));
+    }
+
+    public boolean isGreaterThan(Price price) {
+        return price.price.compareTo(this.price) < 0;
+    }
+
+    public Price times(int times) {
+        return new Price(price.multiply(new BigDecimal(times)));
+    }
+
+    public boolean isLowerThan(Price price) {
+        return price.price.compareTo(this.price) > 0;
+    }
 }

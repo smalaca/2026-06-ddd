@@ -3,6 +3,10 @@ package com.smalaca.trainingcenter.opentrainings.domain.training;
 import com.smalaca.trainingcenter.opentrainings.domain.clock.Clock;
 import com.smalaca.trainingcenter.opentrainings.domain.offer.Offer;
 import com.smalaca.trainingcenter.opentrainings.domain.training.commands.AddTrainingDomainCommand;
+import com.smalaca.trainingcenter.opentrainings.domain.trainingscatalogue.TrainingDefinitionResponse;
+import com.smalaca.trainingcenter.opentrainings.domain.trainingscatalogue.TrainingsCatalogue;
+
+import java.math.BigDecimal;
 
 // Aggregate Root
 // Entity
@@ -25,11 +29,36 @@ public class Training {
     }
 
     // Factory
-    public static Training create(AddTrainingDomainCommand command) {
-        TrainingNumber trainingNumber = TrainingNumber.create();
+    public static Training create(AddTrainingDomainCommand command, TrainingsCatalogue trainingsCatalogue) {
+        TrainingDefinitionResponse response = trainingsCatalogue.find(command.trainingDefinitionId());
+
+        if (isInvalid(command.price(), response.price())) {
+            throw TrainingException.invalidPrice(command.price(), response.price());
+        }
+
+        if (isInvalid(command.period(), response.duration())) {
+            throw TrainingException.outOfRange(command.period(), response.duration());
+        }
+
         return new Training(
-                trainingNumber, command.trainingDefinitionId(), command.trainerId(),
+                TrainingNumber.create(), command.trainingDefinitionId(), command.trainerId(),
                 command.period(), command.price());
+    }
+
+    private boolean isInvalid(Price givenPrice, Price defaultPrice) {
+        if (defaultPrice.minus(new BigDecimal(500)).isGreaterThan(givenPrice)) {
+            return false;
+        }
+
+        if (defaultPrice.times(2).isLowerThan(givenPrice)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean isInvalid(Period period, int duration) {
+        return false;
     }
 
     // factory
