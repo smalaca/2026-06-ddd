@@ -13,7 +13,7 @@ public class Training {
     private TrainingId trainingId;
     private final TrainingNumber trainingNumber;
     private final TrainingDefinitionId trainingDefinitionId;
-    private final TrainerId trainerId;
+    private TrainerId trainerId;
     private final Period period;
     private final Price price;
     private final List<AttendeeId> attendees = new ArrayList<>();
@@ -57,5 +57,18 @@ public class Training {
 
     TrainingId getId() {
         return trainingId;
+    }
+
+    TrainerId getTrainerId() {
+        return trainerId;
+    }
+
+    void change(TrainerId trainerId) {
+        this.trainerId = trainerId;
+    }
+
+    public void moveTo(AttendeeId attendeeId, Training to) {
+        addAttendee(attendeeId);
+        to.attendees.remove(attendeeId);
     }
 }

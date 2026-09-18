@@ -73,7 +73,7 @@ public class TrainingApplicationService {
         Training trainingTo = trainingRepository.findById(trainingIdTo);
         AttendeeId attendeeId = new AttendeeId(command.attendeeId());
 
-        MoveTrainingResponse response = trainingDomainService.move(trainingFrom, trainingTo, attendeeId);
+        MoveTrainingResponse response = trainingDomainService.moveAttendee(trainingFrom, trainingTo, attendeeId);
 
         eventRegistry.register(response.event());
         response.trainings().forEach(trainingRepository::save);
