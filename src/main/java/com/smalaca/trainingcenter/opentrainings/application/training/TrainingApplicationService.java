@@ -7,6 +7,7 @@ import com.smalaca.trainingcenter.opentrainings.domain.offer.Offer;
 import com.smalaca.trainingcenter.opentrainings.domain.offer.OfferRepository;
 import com.smalaca.trainingcenter.opentrainings.domain.training.*;
 import com.smalaca.trainingcenter.opentrainings.domain.training.commands.AddTrainingDomainCommand;
+import com.smalaca.trainingcenter.opentrainings.domain.training.events.TrainingAcceptedEvent;
 import com.smalaca.trainingcenter.opentrainings.domain.trainingscatalogue.TrainingsCatalogue;
 
 import java.util.UUID;
@@ -51,5 +52,15 @@ public class TrainingApplicationService {
         Offer offer = training.registerAttendance(clock);
 
         return offerRepository.save(offer);
+    }
+
+    public UUID accept(UUID trainingId) {
+        TrainingId trainingIdVO = new TrainingId(trainingId);
+        Training training = trainingRepository.findById(trainingIdVO);
+
+        TrainingAcceptedEvent event = training.accept();
+
+        eventRegistry.register(event);
+        return trainingRepository.save(training);
     }
 }
