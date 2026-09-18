@@ -10,6 +10,7 @@ import com.smalaca.trainingcenter.opentrainings.domain.training.commands.AddTrai
 import com.smalaca.trainingcenter.opentrainings.domain.training.events.TrainingAcceptedEvent;
 import com.smalaca.trainingcenter.opentrainings.domain.trainingscatalogue.TrainingsCatalogue;
 
+import java.util.List;
 import java.util.UUID;
 
 public class TrainingApplicationService {
@@ -20,8 +21,9 @@ public class TrainingApplicationService {
     private final OfferRepository offerRepository;
     private final TrainingFactory factory;
     private final Clock clock;
+    private final TrainingDomainService trainingDomainService;
 
-    public TrainingApplicationService(EventRegistry eventRegistry, Calendar calendar, TrainingsCatalogue trainingsCatalogue, TrainingRepository trainingRepository, OfferRepository offerRepository, TrainingFactory factory, Clock clock) {
+    public TrainingApplicationService(EventRegistry eventRegistry, Calendar calendar, TrainingsCatalogue trainingsCatalogue, TrainingRepository trainingRepository, OfferRepository offerRepository, TrainingFactory factory, Clock clock, TrainingDomainService trainingDomainService) {
         this.eventRegistry = eventRegistry;
         this.calendar = calendar;
         this.trainingsCatalogue = trainingsCatalogue;
@@ -29,6 +31,7 @@ public class TrainingApplicationService {
         this.offerRepository = offerRepository;
         this.factory = factory;
         this.clock = clock;
+        this.trainingDomainService = trainingDomainService;
     }
 
     public UUID addTraining(AddTrainingCommand command) {
@@ -71,10 +74,8 @@ public class TrainingApplicationService {
         Training trainingTo = trainingRepository.findById(trainingIdTo);
         AttendeeId attendeeId = new AttendeeId(command.attendeeId());
 
-        trainingFrom.removeAttendee(attendeeId);
-        trainingTo.addAttendee(attendeeId);
+        List<Training> trainings = trainingDomainService.move(trainingFrom, trainingTo, attendeeId);
 
-        trainingRepository.save(trainingFrom);
-        trainingRepository.save(trainingTo);
+        trainings.forEach(trainingRepository::save);
     }
 }
