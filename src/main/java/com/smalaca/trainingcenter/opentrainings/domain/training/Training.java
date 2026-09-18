@@ -1,5 +1,6 @@
 package com.smalaca.trainingcenter.opentrainings.domain.training;
 
+import com.smalaca.trainingcenter.opentrainings.domain.clock.Clock;
 import com.smalaca.trainingcenter.opentrainings.domain.offer.Offer;
 import com.smalaca.trainingcenter.opentrainings.domain.training.commands.AddTrainingDomainCommand;
 
@@ -32,7 +33,7 @@ public class Training {
     }
 
     // factory
-    public Offer registerAttendance() {
-        return Offer.create(trainingId, price);
+    public Offer registerAttendance(Clock clock) {
+        return Offer.create(trainingId, price, clock);
     }
 }

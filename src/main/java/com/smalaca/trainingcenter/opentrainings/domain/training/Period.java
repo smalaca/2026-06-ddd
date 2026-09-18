@@ -1,5 +1,7 @@
 package com.smalaca.trainingcenter.opentrainings.domain.training;
 
+import com.smalaca.trainingcenter.opentrainings.domain.clock.Clock;
+
 import java.time.LocalDate;
 
 // Value object
@@ -13,8 +15,8 @@ public class Period {
     }
 
     // factory
-    public static Period from(LocalDate startDate, LocalDate endDate) {
-        if (LocalDate.now().plusMonths(1).isAfter(startDate)) {
+    public static Period from(Clock clock, LocalDate startDate, LocalDate endDate) {
+        if (clock.now().plusMonths(1).isAfter(startDate)) {
             throw PeriodException.toEarlyStart(startDate);
         }
         if (startDate.isAfter(endDate)) {
