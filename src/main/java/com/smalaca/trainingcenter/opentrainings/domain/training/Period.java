@@ -3,6 +3,7 @@ package com.smalaca.trainingcenter.opentrainings.domain.training;
 import com.smalaca.trainingcenter.opentrainings.domain.clock.Clock;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 // Value object
 public class Period {
@@ -23,5 +24,9 @@ public class Period {
             throw PeriodException.invalidRange(startDate, endDate);
         }
         return new Period(startDate, endDate);
+    }
+
+    public boolean hasDurationEqualTo(int duration) {
+        return ChronoUnit.DAYS.between(startDate, endDate) == duration;
     }
 }

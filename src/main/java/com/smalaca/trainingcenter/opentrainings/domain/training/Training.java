@@ -36,7 +36,7 @@ public class Training {
             throw TrainingException.invalidPrice(command.price(), response.price());
         }
 
-        if (isInvalid(command.period(), response.duration())) {
+        if (hasDurationEqualTo(response.duration(), command.period())) {
             throw TrainingException.outOfRange(command.period(), response.duration());
         }
 
@@ -45,7 +45,11 @@ public class Training {
                 command.period(), command.price());
     }
 
-    private boolean isInvalid(Price givenPrice, Price defaultPrice) {
+    private static boolean hasDurationEqualTo(int duration, Period period) {
+        return period.hasDurationEqualTo(duration);
+    }
+
+    private static boolean isInvalid(Price givenPrice, Price defaultPrice) {
         if (defaultPrice.minus(new BigDecimal(500)).isGreaterThan(givenPrice)) {
             return false;
         }
@@ -55,10 +59,6 @@ public class Training {
         }
 
         return true;
-    }
-
-    private boolean isInvalid(Period period, int duration) {
-        return false;
     }
 
     // factory
