@@ -15,13 +15,15 @@ public class TrainingApplicationService {
     private final TrainingsCatalogue trainingsCatalogue;
     private final TrainingRepository trainingRepository;
     private final OfferRepository offerRepository;
+    private final TrainingFactory factory;
     private final Clock clock;
 
-    public TrainingApplicationService(Calendar calendar, TrainingsCatalogue trainingsCatalogue, TrainingRepository trainingRepository, OfferRepository offerRepository, Clock clock) {
+    public TrainingApplicationService(Calendar calendar, TrainingsCatalogue trainingsCatalogue, TrainingRepository trainingRepository, OfferRepository offerRepository, TrainingFactory factory, Clock clock) {
         this.calendar = calendar;
         this.trainingsCatalogue = trainingsCatalogue;
         this.trainingRepository = trainingRepository;
         this.offerRepository = offerRepository;
+        this.factory = factory;
         this.clock = clock;
     }
 
@@ -33,7 +35,7 @@ public class TrainingApplicationService {
         AddTrainingDomainCommand domainCommand = new AddTrainingDomainCommand(
                 trainingDefinitionId, trainerId, period, price);
 
-        Training training = Training.create(domainCommand, trainingsCatalogue, calendar);
+        Training training = factory.create(domainCommand);
 
         return trainingRepository.save(training);
     }
