@@ -15,7 +15,7 @@ public class TrainingApplicationService {
     public UUID addTraining(AddTrainingCommand command) {
         TrainingDefinitionId trainingDefinitionId = new TrainingDefinitionId(command.trainingDefinitionId());
         TrainerId trainerId = new TrainerId(command.trainerId());
-        Period period = new Period(command.startDate(), command.endDate());
+        Period period = Period.from(command.startDate(), command.endDate());
         Price price = Price.from(command.price());
         AddTrainingDomainCommand domainCommand = new AddTrainingDomainCommand(
                 trainingDefinitionId, trainerId, period);
