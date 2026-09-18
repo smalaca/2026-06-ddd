@@ -3,7 +3,7 @@ package com.smalaca.trainingcenter.opentrainings.domain.training;
 import java.util.UUID;
 
 // Value Object
-class TrainingNumber {
+public class TrainingNumber {
     private final String value;
 
     private TrainingNumber(String value) {

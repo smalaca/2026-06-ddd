@@ -2,6 +2,7 @@ package com.smalaca.trainingcenter.opentrainings.application.training;
 
 import com.smalaca.trainingcenter.opentrainings.domain.calendar.Calendar;
 import com.smalaca.trainingcenter.opentrainings.domain.clock.Clock;
+import com.smalaca.trainingcenter.opentrainings.domain.eventregistry.EventRegistry;
 import com.smalaca.trainingcenter.opentrainings.domain.offer.Offer;
 import com.smalaca.trainingcenter.opentrainings.domain.offer.OfferRepository;
 import com.smalaca.trainingcenter.opentrainings.domain.training.*;
@@ -11,6 +12,7 @@ import com.smalaca.trainingcenter.opentrainings.domain.trainingscatalogue.Traini
 import java.util.UUID;
 
 public class TrainingApplicationService {
+    private final EventRegistry eventRegistry;
     private final Calendar calendar;
     private final TrainingsCatalogue trainingsCatalogue;
     private final TrainingRepository trainingRepository;
@@ -18,7 +20,8 @@ public class TrainingApplicationService {
     private final TrainingFactory factory;
     private final Clock clock;
 
-    public TrainingApplicationService(Calendar calendar, TrainingsCatalogue trainingsCatalogue, TrainingRepository trainingRepository, OfferRepository offerRepository, TrainingFactory factory, Clock clock) {
+    public TrainingApplicationService(EventRegistry eventRegistry, Calendar calendar, TrainingsCatalogue trainingsCatalogue, TrainingRepository trainingRepository, OfferRepository offerRepository, TrainingFactory factory, Clock clock) {
+        this.eventRegistry = eventRegistry;
         this.calendar = calendar;
         this.trainingsCatalogue = trainingsCatalogue;
         this.trainingRepository = trainingRepository;
@@ -35,9 +38,10 @@ public class TrainingApplicationService {
         AddTrainingDomainCommand domainCommand = new AddTrainingDomainCommand(
                 trainingDefinitionId, trainerId, period, price);
 
-        Training training = factory.create(domainCommand);
+        AddTrainingResponse response = factory.create(domainCommand);
 
-        return trainingRepository.save(training);
+        eventRegistry.register(response.event());
+        return trainingRepository.save(response.training());
     }
 
     public UUID registerAttendance(UUID trainingId) {

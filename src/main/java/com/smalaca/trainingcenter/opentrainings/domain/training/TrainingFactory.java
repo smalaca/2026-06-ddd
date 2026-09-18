@@ -3,6 +3,7 @@ package com.smalaca.trainingcenter.opentrainings.domain.training;
 import com.smalaca.trainingcenter.opentrainings.domain.calendar.Calendar;
 import com.smalaca.trainingcenter.opentrainings.domain.calendar.CalendarRequest;
 import com.smalaca.trainingcenter.opentrainings.domain.training.commands.AddTrainingDomainCommand;
+import com.smalaca.trainingcenter.opentrainings.domain.training.events.TrainingAddedEvent;
 import com.smalaca.trainingcenter.opentrainings.domain.trainingscatalogue.TrainingDefinitionResponse;
 import com.smalaca.trainingcenter.opentrainings.domain.trainingscatalogue.TrainingsCatalogue;
 
@@ -18,7 +19,7 @@ public class TrainingFactory {
     }
 
     // Factory
-    public Training create(AddTrainingDomainCommand command) {
+    public AddTrainingResponse create(AddTrainingDomainCommand command) {
         if (calendar.isUnavailable(asCalendarRequest(command))) {
             throw TrainingException.notAvailable(command.trainerId(), command.period());
         }
@@ -33,9 +34,15 @@ public class TrainingFactory {
             throw TrainingException.outOfRange(command.period(), response.duration());
         }
 
-        return new Training(
-                TrainingNumber.create(), command.trainingDefinitionId(), command.trainerId(),
+        TrainingNumber trainingNumber = TrainingNumber.create();
+        Training training = new Training(
+                trainingNumber, command.trainingDefinitionId(), command.trainerId(),
                 command.period(), command.price());
+        TrainingAddedEvent event = TrainingAddedEvent.create(
+                trainingNumber, command.trainingDefinitionId(), command.trainerId(),
+                command.period(), command.price());
+
+        return new AddTrainingResponse(training, event);
     }
 
     private static CalendarRequest asCalendarRequest(AddTrainingDomainCommand command) {
