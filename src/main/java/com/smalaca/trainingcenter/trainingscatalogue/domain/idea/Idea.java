@@ -2,6 +2,7 @@ package com.smalaca.trainingcenter.trainingscatalogue.domain.idea;
 
 import com.smalaca.trainingcenter.trainingscatalogue.domain.reviewerid.ReviewerId;
 import com.smalaca.trainingcenter.trainingscatalogue.domain.draft.Draft;
+import com.smalaca.trainingcenter.trainingscatalogue.domain.trainercatalogue.TrainerCatalogue;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
@@ -33,9 +34,19 @@ public class Idea {
 
     // Factory
     public Draft accept(ReviewerId reviewerId) {
+        if (isNotCompetent(reviewerId)) {
+            throw DraftException.nonCompetentReviewer(reviewerId);
+        }
+
         this.reviewerId = reviewerId;
         this.status = IdeaStatus.ACCEPTED;
 
         return Draft.create(title, description, authorId, ideaId, reviewerId);
+    }
+
+    private boolean isNotCompetent(ReviewerId reviewerId) {
+        TrainerCatalogue trainerCatalogue = null;
+
+        return trainerCatalogue.isNonCompetent(reviewerId);
     }
 }
