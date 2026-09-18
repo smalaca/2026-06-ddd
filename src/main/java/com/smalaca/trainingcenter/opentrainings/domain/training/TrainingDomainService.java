@@ -1,15 +1,19 @@
 package com.smalaca.trainingcenter.opentrainings.domain.training;
 
 import com.google.common.collect.ImmutableList;
+import com.smalaca.trainingcenter.opentrainings.domain.training.events.AttendeeMovedEvent;
 
 public class TrainingDomainService {
-    public ImmutableList<Training> move(Training trainingFrom, Training trainingTo, AttendeeId attendeeId) {
+    public MoveTrainingResponse move(Training trainingFrom, Training trainingTo, AttendeeId attendeeId) {
+        // opcja 1
         trainingFrom.removeAttendee(attendeeId);
         trainingTo.addAttendee(attendeeId);
-
-        // alternatywa
+        // opcja 2
         // trainingFrom.moveTo(attendeeId, trainingTo);
 
-        return ImmutableList.of(trainingFrom, trainingTo);
+        AttendeeMovedEvent event = AttendeeMovedEvent.create(
+                trainingFrom.getId(), trainingTo.getId(), attendeeId);
+
+        return new MoveTrainingResponse(event, ImmutableList.of(trainingFrom, trainingTo));
     }
 }

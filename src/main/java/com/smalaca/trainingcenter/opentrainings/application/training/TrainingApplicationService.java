@@ -10,7 +10,6 @@ import com.smalaca.trainingcenter.opentrainings.domain.training.commands.AddTrai
 import com.smalaca.trainingcenter.opentrainings.domain.training.events.TrainingAcceptedEvent;
 import com.smalaca.trainingcenter.opentrainings.domain.trainingscatalogue.TrainingsCatalogue;
 
-import java.util.List;
 import java.util.UUID;
 
 public class TrainingApplicationService {
@@ -74,8 +73,9 @@ public class TrainingApplicationService {
         Training trainingTo = trainingRepository.findById(trainingIdTo);
         AttendeeId attendeeId = new AttendeeId(command.attendeeId());
 
-        List<Training> trainings = trainingDomainService.move(trainingFrom, trainingTo, attendeeId);
+        MoveTrainingResponse response = trainingDomainService.move(trainingFrom, trainingTo, attendeeId);
 
-        trainings.forEach(trainingRepository::save);
+        eventRegistry.register(response.event());
+        response.trainings().forEach(trainingRepository::save);
     }
 }

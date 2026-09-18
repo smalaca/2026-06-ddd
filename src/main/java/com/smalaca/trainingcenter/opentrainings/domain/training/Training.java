@@ -54,4 +54,8 @@ public class Training {
 
         attendees.add(attendeeId);
     }
+
+    TrainingId getId() {
+        return trainingId;
+    }
 }
