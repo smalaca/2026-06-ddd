@@ -54,13 +54,27 @@ public class TrainingApplicationService {
         return offerRepository.save(offer);
     }
 
-    public UUID accept(UUID trainingId) {
+    public void accept(UUID trainingId) {
         TrainingId trainingIdVO = new TrainingId(trainingId);
         Training training = trainingRepository.findById(trainingIdVO);
 
         TrainingAcceptedEvent event = training.accept();
 
         eventRegistry.register(event);
-        return trainingRepository.save(training);
+        trainingRepository.save(training);
+    }
+
+    public void move(MoveAttendanceCommand command) {
+        TrainingId trainingIdFrom = new TrainingId(command.trainingIdFrom());
+        Training trainingFrom = trainingRepository.findById(trainingIdFrom);
+        TrainingId trainingIdTo = new TrainingId(command.trainingIdTo());
+        Training trainingTo = trainingRepository.findById(trainingIdTo);
+        AttendeeId attendeeId = new AttendeeId(command.attendeeId());
+
+        trainingFrom.removeAttendee(attendeeId);
+        trainingTo.addAttendee(attendeeId);
+
+        trainingRepository.save(trainingFrom);
+        trainingRepository.save(trainingTo);
     }
 }

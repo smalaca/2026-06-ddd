@@ -4,6 +4,9 @@ import com.smalaca.trainingcenter.opentrainings.domain.clock.Clock;
 import com.smalaca.trainingcenter.opentrainings.domain.offer.Offer;
 import com.smalaca.trainingcenter.opentrainings.domain.training.events.TrainingAcceptedEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 // Aggregate Root
 // Entity
 public class Training {
@@ -13,6 +16,7 @@ public class Training {
     private final TrainerId trainerId;
     private final Period period;
     private final Price price;
+    private final List<AttendeeId> attendees = new ArrayList<>();
     private TrainingStatus status;
 
     Training(
@@ -33,5 +37,21 @@ public class Training {
     public TrainingAcceptedEvent accept() {
         status = TrainingStatus.ACCEPTED;
         return TrainingAcceptedEvent.create(trainingId, trainerId, trainingDefinitionId);
+    }
+
+    public void removeAttendee(AttendeeId attendeeId) {
+        if (!attendees.contains(attendeeId)) {
+            throw TrainingException.attendeeNotRegistered(attendeeId);
+        }
+
+        attendees.remove(attendeeId);
+    }
+
+    public void addAttendee(AttendeeId attendeeId) {
+        if (attendees.contains(attendeeId)) {
+            throw TrainingException.attendeeAlreadyRegistered(attendeeId);
+        }
+
+        attendees.add(attendeeId);
     }
 }

@@ -16,4 +16,12 @@ class TrainingException extends RuntimeException {
     static TrainingException notAvailable(TrainerId trainerId, Period period) {
         return new TrainingException("Not available. Trainer " + trainerId + ", period " + period);
     }
+
+    static TrainingException attendeeNotRegistered(AttendeeId attendeeId) {
+        return new TrainingException("Attendee not registered. Attendee " + attendeeId);
+    }
+
+    static TrainingException attendeeAlreadyRegistered(AttendeeId attendeeId) {
+        return new TrainingException("Attendee already registered. Attendee " + attendeeId);
+    }
 }
