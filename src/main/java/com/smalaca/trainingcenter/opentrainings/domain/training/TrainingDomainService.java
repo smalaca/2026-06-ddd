@@ -7,6 +7,9 @@ public class TrainingDomainService {
         trainingFrom.removeAttendee(attendeeId);
         trainingTo.addAttendee(attendeeId);
 
+        // alternatywa
+        // trainingFrom.moveTo(attendeeId, trainingTo);
+
         return ImmutableList.of(trainingFrom, trainingTo);
     }
 }
