@@ -4,16 +4,19 @@ import com.smalaca.trainingcenter.trainingscatalogue.domain.reviewerid.ReviewerI
 import com.smalaca.trainingcenter.trainingscatalogue.domain.draft.Draft;
 import com.smalaca.trainingcenter.trainingscatalogue.domain.draft.DraftRepository;
 import com.smalaca.trainingcenter.trainingscatalogue.domain.idea.*;
+import com.smalaca.trainingcenter.trainingscatalogue.domain.trainercatalogue.TrainersCatalogue;
 
 import java.util.UUID;
 
 public class IdeaApplicationService {
     private final IdeaRepository ideaRepository;
     private final DraftRepository draftRepository;
+    private final TrainersCatalogue trainersCatalogue;
 
-    public IdeaApplicationService(IdeaRepository ideaRepository, DraftRepository draftRepository) {
+    public IdeaApplicationService(IdeaRepository ideaRepository, DraftRepository draftRepository, TrainersCatalogue trainersCatalogue) {
         this.ideaRepository = ideaRepository;
         this.draftRepository = draftRepository;
+        this.trainersCatalogue = trainersCatalogue;
     }
 
     public UUID registerIdea(RegisterIdeaCommand command) {
@@ -40,7 +43,7 @@ public class IdeaApplicationService {
         Idea idea = ideaRepository.findById(ideaIdVO);
 
         // domena
-        Draft draft = idea.accept(reviewerIdVO);
+        Draft draft = idea.accept(reviewerIdVO, trainersCatalogue);
 
         // zapis
         ideaRepository.save(idea);

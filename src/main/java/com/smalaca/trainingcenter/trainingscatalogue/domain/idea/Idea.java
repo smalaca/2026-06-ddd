@@ -2,7 +2,7 @@ package com.smalaca.trainingcenter.trainingscatalogue.domain.idea;
 
 import com.smalaca.trainingcenter.trainingscatalogue.domain.reviewerid.ReviewerId;
 import com.smalaca.trainingcenter.trainingscatalogue.domain.draft.Draft;
-import com.smalaca.trainingcenter.trainingscatalogue.domain.trainercatalogue.TrainerCatalogue;
+import com.smalaca.trainingcenter.trainingscatalogue.domain.trainercatalogue.TrainersCatalogue;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
@@ -18,6 +18,8 @@ public class Idea {
     private final String description;
     private ReviewerId reviewerId;
     private IdeaStatus status;
+    // opcja 1 - external service
+//    private TrainerCatalogue trainerCatalogue;
 
     private Idea(IdeaNumber ideaNumber, AuthorId authorId, String title, String description) {
         this.ideaNumber = ideaNumber;
@@ -33,8 +35,9 @@ public class Idea {
     }
 
     // Factory
-    public Draft accept(ReviewerId reviewerId) {
-        if (isNotCompetent(reviewerId)) {
+    // opcja 2 - external service
+    public Draft accept(ReviewerId reviewerId, TrainersCatalogue trainersCatalogue) {
+        if (trainersCatalogue.isNonCompetent(reviewerId)) {
             throw DraftException.nonCompetentReviewer(reviewerId);
         }
 
@@ -44,9 +47,4 @@ public class Idea {
         return Draft.create(title, description, authorId, ideaId, reviewerId);
     }
 
-    private boolean isNotCompetent(ReviewerId reviewerId) {
-        TrainerCatalogue trainerCatalogue = null;
-
-        return trainerCatalogue.isNonCompetent(reviewerId);
-    }
 }
