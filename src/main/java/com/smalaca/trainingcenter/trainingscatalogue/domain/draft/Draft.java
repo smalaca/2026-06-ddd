@@ -9,6 +9,7 @@ import com.smalaca.trainingcenter.trainingscatalogue.domain.reviewerid.ReviewerI
 // Entity
 public class Draft {
     private DraftId draftId;
+    private final DraftNumber draftNumber;
     private final String title;
     private final String description;
     private final AuthorId authorId;
@@ -17,7 +18,8 @@ public class Draft {
     private Price price;
     private Duration duration;
 
-    private Draft(String title, String description, AuthorId authorId, IdeaId ideaId, ReviewerId reviewerId) {
+    private Draft(DraftNumber draftNumber, String title, String description, AuthorId authorId, IdeaId ideaId, ReviewerId reviewerId) {
+        this.draftNumber = draftNumber;
         this.title = title;
         this.description = description;
         this.authorId = authorId;
@@ -28,7 +30,7 @@ public class Draft {
     // Factory
     public static Draft create(String title, String description, AuthorId authorId, IdeaId ideaId, ReviewerId reviewerId) {
         DraftNumber draftNumber = DraftNumber.create(authorId);
-        return new Draft(title, description, authorId, ideaId, reviewerId);
+        return new Draft(draftNumber, title, description, authorId, ideaId, reviewerId);
     }
 
     public void prepare(Price price, Duration duration) {
