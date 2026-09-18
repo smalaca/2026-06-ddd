@@ -1,31 +1,25 @@
 package com.smalaca.trainingcenter.trainingscatalogue.application.idea;
 
-import com.smalaca.trainingcenter.trainingscatalogue.domain.draft.Draft;
 import com.smalaca.trainingcenter.trainingscatalogue.domain.draft.DraftRepository;
 import com.smalaca.trainingcenter.trainingscatalogue.domain.eventregistry.EventRegistry;
-import com.smalaca.trainingcenter.trainingscatalogue.domain.idea.AuthorId;
-import com.smalaca.trainingcenter.trainingscatalogue.domain.idea.Idea;
-import com.smalaca.trainingcenter.trainingscatalogue.domain.idea.IdeaId;
-import com.smalaca.trainingcenter.trainingscatalogue.domain.idea.IdeaRepository;
-import com.smalaca.trainingcenter.trainingscatalogue.domain.idea.events.IdeaAcceptedEvent;
+import com.smalaca.trainingcenter.trainingscatalogue.domain.idea.*;
 import com.smalaca.trainingcenter.trainingscatalogue.domain.reviewerid.ReviewerId;
-import com.smalaca.trainingcenter.trainingscatalogue.domain.trainercatalogue.TrainersCatalogue;
 
 import java.util.UUID;
 
 public class IdeaApplicationService {
     private final IdeaRepository ideaRepository;
     private final DraftRepository draftRepository;
-    private final TrainersCatalogue trainersCatalogue;
     private final EventRegistry eventRegistry;
+    private final IdeaDomainService service;
 
     public IdeaApplicationService(
-            IdeaRepository ideaRepository, DraftRepository draftRepository, TrainersCatalogue trainersCatalogue,
-            EventRegistry eventRegistry) {
+            IdeaRepository ideaRepository, DraftRepository draftRepository,
+            EventRegistry eventRegistry, IdeaDomainService service) {
         this.ideaRepository = ideaRepository;
         this.draftRepository = draftRepository;
-        this.trainersCatalogue = trainersCatalogue;
         this.eventRegistry = eventRegistry;
+        this.service = service;
     }
 
     public UUID registerIdea(RegisterIdeaCommand command) {
@@ -52,12 +46,11 @@ public class IdeaApplicationService {
         Idea idea = ideaRepository.findById(ideaIdVO);
 
         // domena
-        Draft draft = idea.accept(reviewerIdVO, trainersCatalogue);
-        IdeaAcceptedEvent event = IdeaAcceptedEvent.create(ideaIdVO, reviewerIdVO);
+        AcceptIdeaResponse response = service.acceptIdea(idea, ideaIdVO, reviewerIdVO);
 
         // zapis
-        ideaRepository.save(idea);
-        eventRegistry.register(event);
-        return draftRepository.save(draft);
+        ideaRepository.save(response.idea());
+        eventRegistry.register(response.event());
+        return draftRepository.save(response.draft());
     }
 }
