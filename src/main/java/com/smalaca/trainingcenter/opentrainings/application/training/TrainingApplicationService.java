@@ -78,4 +78,11 @@ public class TrainingApplicationService {
         eventRegistry.register(response.event());
         response.trainings().forEach(trainingRepository::save);
     }
+
+    public void display(UUID trainingId) {
+        TrainingId trainingIdVO = new TrainingId(trainingId);
+        Training training = trainingRepository.findById(trainingIdVO);
+
+        return training.asDto();
+    }
 }

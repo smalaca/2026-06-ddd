@@ -71,4 +71,15 @@ public class Training {
         addAttendee(attendeeId);
         to.attendees.remove(attendeeId);
     }
+
+    public TrainingDto asDto() {
+//        return new TrainingDto(training);
+        return new TrainingDto(
+                trainingId,
+                trainingNumber,
+                trainingDefinitionId,
+                trainerId,
+                period,
+                price);
+    }
 }
