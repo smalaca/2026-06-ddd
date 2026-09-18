@@ -22,7 +22,7 @@ public class TrainingApplicationService {
         Period period = Period.from(command.startDate(), command.endDate());
         Price price = Price.from(command.price());
         AddTrainingDomainCommand domainCommand = new AddTrainingDomainCommand(
-                trainingDefinitionId, trainerId, period);
+                trainingDefinitionId, trainerId, period, price);
 
         Training training = Training.create(domainCommand);
 
@@ -31,8 +31,9 @@ public class TrainingApplicationService {
 
     public UUID registerAttendance(UUID trainingId) {
         TrainingId trainingIdVO = new TrainingId(trainingId);
+        Training training = trainingRepository.findById(trainingIdVO);
 
-        Offer offer = Offer.create(trainingIdVO);
+        Offer offer = training.registerAttendance();
 
         return offerRepository.save(offer);
     }
