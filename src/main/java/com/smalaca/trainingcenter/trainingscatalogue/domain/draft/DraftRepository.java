@@ -5,4 +5,6 @@ import java.util.UUID;
 // Repository
 public interface DraftRepository {
     UUID save(Draft draft);
+
+    Draft findById(DraftId draftId);
 }
