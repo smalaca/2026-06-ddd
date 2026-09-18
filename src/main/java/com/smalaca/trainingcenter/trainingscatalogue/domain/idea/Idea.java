@@ -37,6 +37,8 @@ public class Idea {
     // Factory
     // opcja 2 - external service
     public Draft accept(ReviewerId reviewerId, TrainersCatalogue trainersCatalogue) {
+//        TrainerCompetencyRequest request = new TrainerCompetencyRequest(title, reviewerId);
+
         if (trainersCatalogue.isNonCompetent(reviewerId)) {
             throw DraftException.nonCompetentReviewer(reviewerId);
         }
