@@ -12,4 +12,8 @@ class TrainingException extends RuntimeException {
     static TrainingException outOfRange(Period period, int duration) {
         return new TrainingException("Out of range. Given " + period + ", duration " + duration);
     }
+
+    static TrainingException notAvailable(TrainerId trainerId, Period period) {
+        return new TrainingException("Not available. Trainer " + trainerId + ", period " + period);
+    }
 }

@@ -1,5 +1,7 @@
 package com.smalaca.trainingcenter.opentrainings.domain.training;
 
+import com.smalaca.trainingcenter.opentrainings.domain.calendar.Calendar;
+import com.smalaca.trainingcenter.opentrainings.domain.calendar.CalendarRequest;
 import com.smalaca.trainingcenter.opentrainings.domain.clock.Clock;
 import com.smalaca.trainingcenter.opentrainings.domain.offer.Offer;
 import com.smalaca.trainingcenter.opentrainings.domain.training.commands.AddTrainingDomainCommand;
@@ -29,7 +31,12 @@ public class Training {
     }
 
     // Factory
-    public static Training create(AddTrainingDomainCommand command, TrainingsCatalogue trainingsCatalogue) {
+    public static Training create(
+            AddTrainingDomainCommand command, TrainingsCatalogue trainingsCatalogue, Calendar calendar) {
+        if (calendar.isUnavailable(asCalendarRequest(command))) {
+            throw TrainingException.notAvailable(command.trainerId(), command.period());
+        }
+
         TrainingDefinitionResponse response = trainingsCatalogue.find(command.trainingDefinitionId());
 
         if (isInvalid(command.price(), response.price())) {
@@ -43,6 +50,10 @@ public class Training {
         return new Training(
                 TrainingNumber.create(), command.trainingDefinitionId(), command.trainerId(),
                 command.period(), command.price());
+    }
+
+    private static CalendarRequest asCalendarRequest(AddTrainingDomainCommand command) {
+        return new CalendarRequest(command.trainerId(), command.period());
     }
 
     private static boolean hasDurationEqualTo(int duration, Period period) {
